@@ -19,6 +19,8 @@ jobs:
           zip --junk-paths my-artifact build/index.js
 
       - name: Create issue using REST API
+        permissions:
+          issues: write
         run: |
           curl --request POST \
           --url https://api.github.com/repos/${{ github.repository }}/issues \
