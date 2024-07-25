@@ -29,6 +29,6 @@ jobs:
       - name: Upload release artifacts
         uses: Roang-zero1/github-upload-release-artifacts-action@v2
         with:
-          args: "build/index.js"
+          args: "./build/index.js"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
