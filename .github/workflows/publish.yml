@@ -16,3 +16,9 @@ jobs:
       - run: bun install
       - run: bun test
       - run: bun run build
+
+      - uses: Shopify/upload-to-release@v1
+        with:
+          name: my-artifact
+          path: build/index.js
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
