@@ -17,7 +17,6 @@ jobs:
       - run: bun test
       - run: bun run build
 
-      - name: Upload to Release Action
       - uses: Shopify/upload-to-release@v2.0.0
         with:
           name: my-artifact
