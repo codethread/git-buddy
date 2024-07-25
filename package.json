@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun run src/index.ts",
+    "release": "bun run scripts/release.ts",
     "build": "bun build --entrypoints ./src/index.ts --outdir ./build --minify --target bun"
   },
   "devDependencies": {
