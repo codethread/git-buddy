@@ -1,0 +1,16 @@
+{
+  "name": "git-buddy",
+  "version": "0.0.1",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "build": "bun build --entrypoints ./src/index.ts --outdir ./build --minify --target bun"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
