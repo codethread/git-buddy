@@ -22,7 +22,7 @@ jobs:
         uses: fnkr/github-action-ghr@v1
         if: startsWith(github.ref, 'refs/tags/')
         env:
-          GHR_PATH: my-artifact
+          GHR_PATH: my-artifact.zip
           GHR_DELETE: true
           GHR_REPLACE: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
