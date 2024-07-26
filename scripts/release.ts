@@ -21,9 +21,10 @@ await Bun.write(
 	JSON.stringify({ name, version: newVersion, ...pjFields }),
 )
 await $`prettier --write package.json`
+await $`auto-changelog --ignore-commit-pattern "release v.*"`
 
 print('Committing', `${commitMsg}`)
-await $`git add package.json`
+await $`git add package.json CHANGELOG.md`
 await $`git commit -m "${commitMsg}"`
 
 print('Pushing', `v${newVersion}`)
