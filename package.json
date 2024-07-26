@@ -9,7 +9,7 @@
 		"checks": "bun test:format && bun test:ts && bun test:unit",
 		"format": "prettier --write \"src/**/*.ts\"",
 		"start": "bun run src/prod.ts",
-		"build": "bun run scripts/prod.ts",
+		"build": "bun run scripts/build.ts",
 		"test:format": "prettier --check \"src/**/*.ts\"",
 		"test:ts": "tsc --noEmit",
 		"test:unit": "bun test",
