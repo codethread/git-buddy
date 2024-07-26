@@ -4,7 +4,7 @@ name: publish
 on:
   push:
     tags:
-      - "*"
+      - '*'
 
 jobs:
   build:
@@ -17,6 +17,7 @@ jobs:
       - run: bun install
       - run: bun test
       - run: bun run build
+      - run: chmod +x build/git-buddy
       - run: tar -czvf git-buddy.tar.gz build/git-buddy
 
       - name: Release
