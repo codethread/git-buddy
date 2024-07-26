@@ -15,7 +15,7 @@ const [bump] = process.argv.slice(2)
 	}
 
 	if (branch != 'main') {
-		fail('need to be on main branch')
+		fail(`need to be on main branch, current: ${branch}`)
 	}
 
 	if (!['minor', 'major'].includes(bump))
