@@ -29,6 +29,7 @@ await $`git tag v${newVersion}`
 
 print('Generating', `release notes`)
 await $`auto-changelog --ignore-commit-pattern "release v.*"`
+await $`git add CHANGELOG.md`
 await $`git commit --amend --no-edit`
 
 print('Pushing', `v${newVersion}`)
