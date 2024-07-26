@@ -15,7 +15,6 @@ jobs:
       - uses: oven-sh/setup-bun@v2
 
       - run: bun install
-      - run: bun test
       - run: bun run build
       - run: chmod +x build/git-buddy
       - run: tar -czvf git-buddy.tar.gz build/git-buddy

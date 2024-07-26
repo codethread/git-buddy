@@ -4,9 +4,15 @@
 	"module": "src/index.ts",
 	"type": "module",
 	"scripts": {
-		"dev": "bun run src/index.ts",
-		"format": "prettier --write src/**/*.ts",
-		"build": "bun run scripts/build.ts",
+		"dev": "NODE_ENV=development bun --watch run src/dev.ts",
+		"ts": "tsc --noEmit --watch",
+		"checks": "bun test:format && bun test:ts && bun test:unit",
+		"format": "prettier --write \"src/**/*.ts\"",
+		"start": "bun run src/prod.ts",
+		"build": "bun run scripts/prod.ts",
+		"test:format": "prettier --check \"src/**/*.ts\"",
+		"test:ts": "tsc --noEmit",
+		"test:unit": "bun test",
 		"release:patch": "bun run scripts/release.ts minor",
 		"release:breaking": "bun run scripts/release.ts major",
 		"release:notes": "bun run scripts/notes.ts"
