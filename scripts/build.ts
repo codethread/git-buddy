@@ -1,6 +1,7 @@
 const result = await Bun.build({
 	entrypoints: ['./src/prod.ts'],
 	minify: true,
+	target: 'bun',
 })
 
 if (!result.success) {
