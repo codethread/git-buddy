@@ -3,8 +3,47 @@ import pj from '../package.json'
 
 const [bump] = process.argv.slice(2)
 
-// Validations
-{
+await validations()
+
+const { name, version, ...pjFields } = pj
+
+let [major, minor] = version.split('.').map((v) => parseInt(v))
+
+if (bump === 'major') major++
+if (bump === 'minor') minor++
+
+const newVersion = [major, minor, 0].join('.')
+const commitMsg = `${bump === 'major' ? '!' : ''}release v${newVersion}`
+
+print('Updating', `package json with new version ${newVersion}`)
+await Bun.write(
+	'./package.json',
+	JSON.stringify({ name, version: newVersion, ...pjFields }),
+)
+await $`prettier --write package.json`
+
+print('Committing', `${commitMsg}`)
+await $`git add package.json`
+await $`git commit -m "${commitMsg}"`
+
+print('Pushing', `v${newVersion}`)
+await $`git tag v${newVersion}`
+await $`git push; git push --tags`
+
+/***********************************************\
+        PRIVATES
+\***********************************************/
+
+function fail(msg: string) {
+	console.error(msg)
+	process.exit(1)
+}
+
+function print(word: string, ...msg: string[]) {
+	console.log(`\x1b[36m${word}\x1b[0m`, ...msg, '\n')
+}
+
+async function validations() {
 	let [gitStatus, branch] = (
 		await Promise.all([
 			$`git status --porcelain`.text(),
@@ -22,29 +61,4 @@ const [bump] = process.argv.slice(2)
 
 	if (!['minor', 'major'].includes(bump))
 		fail('expected argument minor or major')
-
-	function fail(msg: string) {
-		console.error(msg)
-		process.exit(1)
-	}
 }
-
-const { name, version, ...pjFields } = pj
-
-let [major, minor] = version.split('.').map((v) => parseInt(v))
-
-if (bump === 'major') major++
-if (bump === 'minor') minor++
-
-const newVersion = [major, minor, 0].join('.')
-
-await Bun.write(
-	'./package.json',
-	JSON.stringify({ name, version: newVersion, ...pjFields }),
-)
-
-await $`prettier --write package.json`
-await $`git add package.json`
-await $`git commit -m "${bump === 'major' ? '!' : ''}release v${newVersion}"`
-await $`git tag v${newVersion}`
-await $`git push; git push --tags`
