@@ -18,11 +18,7 @@ jobs:
       - run: bun run build
       - run: chmod +x build/git-buddy
       - run: tar -czvf git-buddy.tar.gz build/git-buddy
-      - run: |
-          bunx auto-changelog \
-            --ignore-commit-pattern "release v.*" \
-            --starting-version ${{ github.ref_name }} \
-            --output release-notes.md
+      - run: bun scripts/notes.ts ${{ github.ref_name }} release-notes.md
 
       - name: Release
         uses: fnkr/github-action-ghr@ghr-options
