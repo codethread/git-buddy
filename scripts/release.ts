@@ -43,6 +43,8 @@ await Bun.write(
 	JSON.stringify({ name, version: newVersion, ...pjFields }),
 )
 
-await Promise.all([$`git tag v${newVersion}`, $`prettier --write package.json`])
-
+await $`prettier --write package.json`
+await $`git add package.json`
+await $`git commit -m "${bump === 'major' ? '!' : ''}release v${newVersion}"`
+await $`git tag v${newVersion}`
 await $`git push; git push --tags`
