@@ -5,16 +5,18 @@ const [bump] = process.argv.slice(2)
 
 // Validations
 {
-	let [gitStatus, branch] = await Promise.all([
-		$`git status --porcelain`.text(),
-		$`git rev-parse --abbrev-ref HEAD`.text(),
-	])
+	let [gitStatus, branch] = (
+		await Promise.all([
+			$`git status --porcelain`.text(),
+			$`git rev-parse --abbrev-ref HEAD`.text(),
+		])
+	).map((t) => t.trim())
 
 	if (gitStatus !== '') {
 		fail('Unstaged work, commit it')
 	}
 
-	if (branch != 'main') {
+	if (branch !== 'main') {
 		fail(`need to be on main branch, current: ${branch}`)
 	}
 
