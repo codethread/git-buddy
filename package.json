@@ -8,7 +8,8 @@
 		"format": "prettier --write src/**/*.ts",
 		"build": "bun run scripts/build.ts",
 		"release:patch": "bun run scripts/release.ts minor",
-		"release:breaking": "bun run scripts/release.ts major"
+		"release:breaking": "bun run scripts/release.ts major",
+		"release:notes": "bun run scripts/notes.ts"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",

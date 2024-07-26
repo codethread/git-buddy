@@ -40,7 +40,7 @@ function fail(msg: string) {
 }
 
 function print(word: string, ...msg: string[]) {
-	console.log(`\x1b[36m${word}\x1b[0m`, ...msg, '\n')
+	console.log(`\n\x1b[36m${word}\x1b[0m`, ...msg, '\n')
 }
 
 async function validations() {
