@@ -1,3 +1,6 @@
-import { version } from './version.js' with { type: 'macro' }
+import { CliConfig } from '@effect/cli'
+import { BunContext } from '@effect/platform-bun'
+import { Effect } from 'effect'
+import { cli } from './cli.js'
 
-export const message = `Hello Bun! ${version()} env: ${Bun.env.NODE_ENV ?? 'production'}`
+export const program = cli(process.argv).pipe(Effect.provide(BunContext.layer))

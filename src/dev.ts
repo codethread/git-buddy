@@ -1,3 +1,14 @@
-import { message } from './main.js'
+import { CliConfig } from '@effect/cli'
+import { Effect } from 'effect'
+import { program } from './main.js'
 
-console.log('dev', message)
+const hideBuiltIns = Bun.env.BUDDY_HIDE_BUILTIN === 'false' ? false : true
+
+program.pipe(
+	Effect.provide(
+		CliConfig.layer({
+			showBuiltIns: hideBuiltIns,
+		}),
+	),
+	Effect.runSync,
+)
