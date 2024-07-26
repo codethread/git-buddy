@@ -29,4 +29,4 @@ jobs:
           GHR_DELETE: true
           GHR_REPLACE: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GHR_BODY_FILE: ./release-notes.md
+          GHR_BODY_FILE: ./release-notes
