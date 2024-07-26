@@ -1,19 +1,20 @@
 {
-  "name": "git-buddy",
-  "version": "0.0.2",
-  "module": "src/index.ts",
-  "type": "module",
-  "scripts": {
-    "dev": "bun run src/index.ts",
-    "release:patch": "bun run scripts/release.ts minor",
-    "release:breaking": "bun run scripts/release.ts major",
-    "bundle": "bun build --compile --minify --target=bun-darwin-arm64 ./src/index.ts --outfile ./build/git-buddy",
-    "build": "bun run scripts/build.ts"
-  },
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  }
+	"name": "git-buddy",
+	"version": "0.0.18",
+	"module": "src/index.ts",
+	"type": "module",
+	"scripts": {
+		"dev": "bun run src/index.ts",
+		"format": "prettier --write src/**/*.ts",
+		"build": "bun run scripts/build.ts",
+		"release:patch": "bun run scripts/release.ts minor",
+		"release:breaking": "bun run scripts/release.ts major"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"prettier": "^3.3.3"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	}
 }

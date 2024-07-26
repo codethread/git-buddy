@@ -1,5 +1,5 @@
-import { version } from "./version" with { type: "macro" };
+import { version } from './version' with { type: 'macro' }
 
-export const message = `Hello Bun! ${version()}`;
+export const message = `Hello Bun! ${version()}`
 
-console.log(message);
+console.log(message)

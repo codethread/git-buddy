@@ -1,5 +1,5 @@
-import pj from "../package.json";
+import pj from '../package.json'
 
 export function version() {
-  return pj.version;
+	return pj.version
 }
