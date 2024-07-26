@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "bun run src/index.ts",
-    "release": "bun run scripts/release.ts",
-    "build": "bun build --compile --minify --target=bun-darwin-arm64 ./src/index.ts --outfile ./build/git-buddy"
+    "release:patch": "bun run scripts/release.ts minor",
+    "release:breaking": "bun run scripts/release.ts major",
+    "bundle": "bun build --compile --minify --target=bun-darwin-arm64 ./src/index.ts --outfile ./build/git-buddy",
+    "build": "bun run scripts/build.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"
