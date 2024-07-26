@@ -1,36 +1,36 @@
 {
-  "name": "git-buddy",
-  "version": "0.20.0",
-  "module": "src/index.ts",
-  "type": "module",
-  "scripts": {
-    "dev": "NODE_ENV=development bun --watch run src/dev.ts",
-    "ts": "tsc --noEmit --watch",
-    "checks": "bun test:format && bun test:ts && bun test:unit",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "start": "bun run src/prod.ts",
-    "build": "bun run scripts/build.ts",
-    "test:format": "prettier --check \"src/**/*.ts\"",
-    "test:ts": "tsc --noEmit",
-    "test:unit": "bun test",
-    "release:patch": "bun run scripts/release.ts minor",
-    "release:breaking": "bun run scripts/release.ts major"
-  },
-  "devDependencies": {
-    "@total-typescript/ts-reset": "^0.5.1",
-    "@total-typescript/tsconfig": "^1.0.4",
-    "@types/bun": "latest",
-    "auto-changelog": "^2.4.0",
-    "prettier": "^3.3.3",
-    "type-fest": "^4.23.0"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
-  "dependencies": {
-    "@effect/cli": "^0.39.2",
-    "@effect/platform-bun": "^0.40.2",
-    "@effect/schema": "^0.69.2",
-    "effect": "^3.5.8"
-  }
+	"name": "git-buddy",
+	"version": "0.21.0",
+	"module": "src/index.ts",
+	"type": "module",
+	"scripts": {
+		"dev": "NODE_ENV=development bun --watch run src/dev.ts",
+		"ts": "tsc --noEmit --watch",
+		"checks": "bun test:format && bun test:ts && bun test:unit",
+		"format": "prettier --write \"src/**/*.ts\"",
+		"start": "bun run src/prod.ts",
+		"build": "bun run scripts/build.ts",
+		"test:format": "prettier --check \"src/**/*.ts\"",
+		"test:ts": "tsc --noEmit",
+		"test:unit": "bun test",
+		"release:patch": "bun run scripts/release.ts minor",
+		"release:breaking": "bun run scripts/release.ts major"
+	},
+	"devDependencies": {
+		"@total-typescript/ts-reset": "^0.5.1",
+		"@total-typescript/tsconfig": "^1.0.4",
+		"@types/bun": "latest",
+		"auto-changelog": "^2.4.0",
+		"prettier": "^3.3.3",
+		"type-fest": "^4.23.0"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	},
+	"dependencies": {
+		"@effect/cli": "^0.39.2",
+		"@effect/platform-bun": "^0.40.2",
+		"@effect/schema": "^0.69.2",
+		"effect": "^3.5.8"
+	}
 }
