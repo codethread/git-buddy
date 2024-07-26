@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "bun run src/index.ts",
     "release": "bun run scripts/release.ts",
-    "build": "bun build --entrypoints ./src/index.ts --outdir ./build --minify --target bun"
+    "build": "bun build --compile --minify --target=bun-darwin-arm64 ./src/index.ts --outfile ./build/git-buddy"
   },
   "devDependencies": {
     "@types/bun": "latest"
