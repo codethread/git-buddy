@@ -18,6 +18,7 @@ jobs:
       - run: bun run build
       - run: chmod +x build/git-buddy
       - run: tar -czvf git-buddy.tar.gz build/git-buddy
+      - run: bun run release:notes
 
       - name: Release
         uses: fnkr/github-action-ghr@ghr-options
@@ -27,3 +28,4 @@ jobs:
           GHR_DELETE: true
           GHR_REPLACE: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHR_BODY_FILE: ./release-notes
