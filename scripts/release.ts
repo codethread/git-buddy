@@ -4,6 +4,7 @@ import pj from '../package.json'
 const [bump] = process.argv.slice(2)
 
 await validations()
+await $`git pull`
 
 const { name, version, ...pjFields } = pj
 
