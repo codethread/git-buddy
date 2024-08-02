@@ -1,6 +1,11 @@
-import { CliConfig } from '@effect/cli'
 import { BunContext } from '@effect/platform-bun'
-import { Effect } from 'effect'
-import { cli } from './cli.js'
+import { Console, Effect } from 'effect'
+import { cli } from './cli/cli.js'
+import { AppLive } from './services/layers.js'
 
-export const program = cli(process.argv).pipe(Effect.provide(BunContext.layer))
+export const program = (args: string[]) =>
+	cli(args).pipe(
+		Effect.andThen(Console.log('✓ Done')),
+		Effect.provide(AppLive),
+		Effect.provide(BunContext.layer),
+	)
