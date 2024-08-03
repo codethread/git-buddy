@@ -58,7 +58,7 @@ export const PromptLive = Layer.effect(
 						{
 							$schema:
 								nodenv === 'production'
-									? `https://github.com/codethread/git-buddy/releases/download/v${version()}/schema.json`
+									? `https://github.com/codethread/git-buddy/releases/download/v${version()}/schema.json.tar.gz`
 									: path.join(process.cwd(), 'build/schema.json'),
 							...content,
 						},
