@@ -5,13 +5,15 @@ import { Prompt as P } from '@effect/cli'
 import { InvalidConfig, UserCancelled } from '../domain/errors.js'
 import { getEnvs } from './settings/getEnvs.js'
 import { decodeUserSettings, type StoredSettings } from './settings/schema.js'
-import { recoverFromInvalidConfig } from './settings/helpers.js'
+import { mergeConfigs, recoverFromInvalidConfig } from './settings/helpers.js'
 import Conf from 'conf'
 import { name, version } from '../version.js'
+import { defaultRootOptions, type RootOptions } from '../domain/types.js'
 
 export class Settings extends Context.Tag(ids.settings)<
 	Settings,
 	{
+		readonly applyRootOptions: (opts: RootOptions) => Effect.Effect<void>
 		readonly settings: Effect.Effect<StoredSettings>
 		/** Open the users settings file and validate changes */
 		readonly open: Effect.Effect<void, PromptErrors>
@@ -26,6 +28,8 @@ export const SettingsLive = Layer.effect(
 		const envs = yield* _(getEnvs)
 		const prompt = yield* _(Prompt)
 
+		let rootOptions = defaultRootOptions
+
 		const store = new Conf<StoredSettings>({
 			projectName: name(),
 			projectVersion: version(),
@@ -34,6 +38,7 @@ export const SettingsLive = Layer.effect(
 				cli: {
 					hideBuiltinHelp: false,
 				},
+				gitlab: {} as any,
 			},
 		})
 
@@ -50,10 +55,16 @@ export const SettingsLive = Layer.effect(
 		return Settings.of({
 			open,
 			settings: Effect.gen(function* () {
-				return store.store
+				return mergeConfigs(rootOptions, envs, store.store)
 			}),
+			applyRootOptions: (opts) =>
+				Effect.gen(function* (_) {
+					rootOptions = opts
+				}),
 		})
 	}),
 )
 
 export const getSettings = Settings.pipe(Effect.andThen((_) => _.settings))
+export const applyRootArgs = (opts: RootOptions) =>
+	Settings.pipe(Effect.andThen((_) => _.applyRootOptions(opts)))
