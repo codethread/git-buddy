@@ -18,7 +18,7 @@ jobs:
       - run: bun checks
       - run: bun run build
       - run: chmod +x build/git-buddy
-      - run: bun scripts/notes.ts ${{ github.ref_name }} release-notes.md
+      - run: bun scripts/notes.ts ${{ github.ref_name }} build/release-notes.md
 
       - name: Release
         uses: fnkr/github-action-ghr@ghr-options
