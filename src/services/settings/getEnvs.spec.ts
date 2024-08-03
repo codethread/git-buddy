@@ -1,5 +1,5 @@
 import { test, expect, describe } from 'bun:test'
-import { Effect, ConfigProvider } from 'effect'
+import { Effect, ConfigProvider, Option } from 'effect'
 import { getEnvs } from './getEnvs.js'
 
 describe('getEnvs', () => {
@@ -15,6 +15,7 @@ describe('getEnvs', () => {
 		expect(out).toEqual({
 			nodenv: 'test',
 			hideBuiltin: true,
+			gitlabToken: Option.none(),
 		})
 	})
 

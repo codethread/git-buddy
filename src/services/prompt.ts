@@ -1,3 +1,4 @@
+import path from 'node:path'
 import editor from '@inquirer/editor'
 import { Schema as S } from '@effect/schema'
 import { Context, Effect, Either, Layer, Match } from 'effect'
@@ -12,6 +13,7 @@ import {
 } from '../domain/errors.js'
 import { decodeUserSettings, type StoredSettings } from './settings/schema.js'
 import { decodeJson } from '../utils/schemas.js'
+import { getEnvs } from './settings/getEnvs.js'
 
 export type PromptErrors = UserCancelled | InvalidConfig
 
@@ -29,6 +31,8 @@ export class Prompt extends Context.Tag(ids.prompt)<
 	}
 >() {}
 
+type Service = Context.Tag.Service<Prompt>
+
 const openEditor = (options: Parameters<typeof editor>[0]) =>
 	Effect.tryPromise({
 		try: () => editor(options),
@@ -41,31 +45,37 @@ const openEditor = (options: Parameters<typeof editor>[0]) =>
 		},
 	})
 
-export const PromptLive = Layer.succeed(
+export const PromptLive = Layer.effect(
 	Prompt,
-	Prompt.of({
-		editor: (content, opts = { ext: 'json' }) =>
-			openEditor({
-				// name: toolName + toolVersion,
-				message: 'Edit configuration',
-				postfix: opts.ext === 'json' ? '.json' : '.txt',
-				default: JSON.stringify(
-					{
-						$schema: 'https://unpkg.com/knip@5/schema.json', // TODO: how do schema?
-						...content,
-					},
-					null,
-					2,
-				),
-			}).pipe(
-				Effect.andThen(decodeJson),
-				Effect.andThen(decodeUserSettings),
-				Effect.mapError((e) =>
-					Match.value(e).pipe(
-						Match.tag('ParseError', InvalidConfig.of),
-						Match.orElse((_) => _),
+	Effect.gen(function* (_) {
+		const { nodenv } = yield* _(getEnvs)
+		return {
+			editor: (content, opts = { ext: 'json' }) =>
+				openEditor({
+					// name: toolName + toolVersion,
+					message: 'Edit configuration',
+					postfix: opts.ext === 'json' ? '.json' : '.txt',
+					default: JSON.stringify(
+						{
+							$schema:
+								nodenv === 'production'
+									? 'someUrl'
+									: path.join(process.cwd(), 'build/schema.json'),
+							...content,
+						},
+						null,
+						2,
+					),
+				}).pipe(
+					Effect.andThen(decodeJson),
+					Effect.andThen(decodeUserSettings),
+					Effect.mapError((e) =>
+						Match.value(e).pipe(
+							Match.tag('ParseError', InvalidConfig.of),
+							Match.orElse((_) => _),
+						),
 					),
 				),
-			),
+		}
 	}),
 )
