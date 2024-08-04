@@ -7,8 +7,9 @@ import { getEnvs } from './settings/getEnvs.js'
 import { decodeUserSettings, type StoredSettings } from './settings/schema.js'
 import { mergeConfigs, recoverFromInvalidConfig } from './settings/helpers.js'
 import Conf from 'conf'
-import { name, version } from '../version.js'
 import { defaultRootOptions, type RootOptions } from '../domain/types.js'
+import { name, version } from '../utils/version.js'
+import type { FileSystem } from '@effect/platform'
 
 export class Settings extends Context.Tag(ids.settings)<
 	Settings,
@@ -16,7 +17,7 @@ export class Settings extends Context.Tag(ids.settings)<
 		readonly applyRootOptions: (opts: RootOptions) => Effect.Effect<void>
 		readonly settings: Effect.Effect<StoredSettings>
 		/** Open the users settings file and validate changes */
-		readonly open: Effect.Effect<void, PromptErrors>
+		readonly open: Effect.Effect<void, PromptErrors, FileSystem.FileSystem>
 	}
 >() {}
 
