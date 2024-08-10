@@ -1,8 +1,6 @@
-import { Context, Effect, Layer, Match, Option } from 'effect'
-import ids from '../utils/ids.js'
+import { Context, Effect, Layer, Match } from 'effect'
 import { InvalidConfig, UserCancelled } from '../domain/errors.js'
 import {
-	ConfigSchema,
 	decodeUserSettings,
 	type ConfigJson,
 	type UserConfig,
