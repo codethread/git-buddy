@@ -1,28 +1,29 @@
-import { Effect, Config } from 'effect'
+import { Effect, Config, Data, Option as O, Redacted } from 'effect'
+import { prettyPrint } from '../../utils/fns.js'
+
+const nodenvs = ['production', 'test', 'development'] as const
+
+export class Envs extends Data.Class<{
+	readonly hideBuiltin: O.Option<boolean>
+	readonly nodenv: (typeof nodenvs)[number]
+	readonly gitlabToken: O.Option<Redacted.Redacted<string>>
+}> {
+	override toString() {
+		return prettyPrint('Envs', this)
+	}
+}
+
+type EnvStruct = Record<keyof Envs, any>
 
 export const getEnvs = Effect.gen(function* (_) {
-	const nodenv = yield* _(
-		Config.literal(
-			'production',
-			'test',
-			'development',
-		)('NODE_ENV').pipe(Config.withDefault('production')),
-	)
-
-	const [hideBuiltin, gitlabToken] = yield* _(
-		Config.all([
-			Config.boolean('BUDDY_HIDE_BUILTIN').pipe(
-				Config.withDefault(nodenv !== 'production'),
+	return yield* _(
+		Config.all({
+			nodenv: Config.literal(...nodenvs)('NODE_ENV').pipe(
+				Config.withDefault('production'),
 			),
-			Config.redacted('BUDDY_GITLAB_TOKEN').pipe(Config.option),
-		]),
+			hideBuiltin: Config.boolean('BUDDY_HIDE_BUILTIN').pipe(Config.option),
+			gitlabToken: Config.redacted('BUDDY_GITLAB_TOKEN').pipe(Config.option),
+		} satisfies EnvStruct),
+		Effect.andThen((envs) => new Envs(envs)),
 	)
-
-	return {
-		hideBuiltin,
-		nodenv,
-		gitlabToken,
-	}
-})
-
-export type Envs = Effect.Effect.Success<typeof getEnvs>
+}).pipe(Effect.tap(Effect.logDebug), Effect.withSpan('getEnvs'))

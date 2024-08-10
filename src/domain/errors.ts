@@ -1,5 +1,6 @@
 import { ParseError } from '@effect/schema/ParseResult'
-import { Data } from 'effect'
+import { Data, Effect } from 'effect'
+import type { ConfigSchema } from '../services/settings/schema.js'
 
 export class InvalidConfig extends Data.TaggedError('InvalidConfig')<{
 	readonly error: ParseError
@@ -22,15 +23,14 @@ export class UserCancelled extends Data.TaggedError('UserCancelled')<{}> {
 	}
 }
 
-export class UnexpectedError extends Data.TaggedError('UnexpectedError')<{
-	readonly error: unknown
+export class UninitialisedCli extends Data.TaggedError('UninitialisedCli')<{
+	readonly store: ConfigSchema
 }> {
-	static of(error: unknown) {
-		return new UnexpectedError({ error })
-	}
 	override toString(): string {
-		return `Something went wrong. ${this.error}`
+		return `Accessing settings before Root Settings merged`
 	}
 }
+
+export const UnexpectedError = (e: unknown) => Effect.die(String(e))
 
 export class InvalidTestSetup extends Error {}

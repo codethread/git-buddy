@@ -1,7 +1,7 @@
 import { Prompt as P } from '@effect/cli'
 import { Effect, Console, Match, Option } from 'effect'
-import { UserCancelled } from '../../domain/errors.js'
-import { decodeUserSettings, type StoredSettings } from './schema.js'
+import { UnexpectedError, UserCancelled } from '../../domain/errors.js'
+import { ConfigSchema, decodeUserSettings, type UserConfig } from './schema.js'
 import { Prompt } from '../prompt.js'
 import type { RootOptions } from '../../domain/types.js'
 import type { Envs } from './getEnvs.js'
@@ -25,7 +25,10 @@ const promptAndEdit = (input: any) =>
 				until: (e) => e._tag === 'UserCancelled',
 			}),
 		)
-	})
+	}).pipe(
+		Effect.catchTag('QuitException', (e) => UnexpectedError(e)),
+		Effect.withSpan('promptAndEdit'),
+	)
 
 export const recoverFromInvalidConfig = (db: unknown) =>
 	Effect.gen(function* (_) {
@@ -42,7 +45,7 @@ export const recoverFromInvalidConfig = (db: unknown) =>
 			),
 			Match.orElse((valid) => Effect.succeed(valid)),
 		)
-	})
+	}).pipe(Effect.withSpan('recoverFromInvalidConfig'))
 
 /**
  * Merge user config, overriding with any environment options, and finally any
@@ -51,23 +54,22 @@ export const recoverFromInvalidConfig = (db: unknown) =>
 export const mergeConfigs = (
 	rootOptions: RootOptions,
 	envs: Envs,
-	db: StoredSettings,
-): StoredSettings => {
-	const storedToken = Option.fromNullable(db.gitlab).pipe(
-		Option.andThen((g) => g.token),
-	)
-
-	const gitlabToken = Option.firstSomeOf([
-		rootOptions.gitlabToken,
-		envs.gitlabToken,
-		storedToken,
-	])
-
-	return {
+	db: UserConfig,
+): UserConfig => {
+	return ConfigSchema.make({
 		...db,
-		gitlab: {
-			...db.gitlab,
-			token: gitlabToken,
+		cli: {
+			hideBuiltinHelp: envs.hideBuiltin.pipe(
+				Option.getOrElse(() => db.cli.hideBuiltinHelp),
+			),
 		},
-	}
+		gitlab: Option.some({
+			graphUrl: Option.none(),
+			token: Option.firstSomeOf([
+				rootOptions.gitlabToken,
+				envs.gitlabToken,
+				db.gitlab.pipe(Option.andThen((_) => _.token)),
+			]),
+		}),
+	})
 }

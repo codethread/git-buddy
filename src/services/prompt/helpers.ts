@@ -4,7 +4,7 @@ import { FileSystem } from '@effect/platform'
 import { Effect } from 'effect'
 import envPaths from 'env-paths'
 import { UnexpectedError, UserCancelled } from '../../domain/errors.js'
-import { createSchema } from '../settings/schema.js'
+import { createSchema, type ConfigJson } from '../settings/schema.js'
 import { name } from '../../utils/version.js'
 
 export const openEditor = (options: Parameters<typeof editor>[0]) =>
@@ -12,11 +12,11 @@ export const openEditor = (options: Parameters<typeof editor>[0]) =>
 		try: () => editor(options),
 		catch: (e) => {
 			if (typeof e === 'object' && e !== null && 'isTtyError' in e) {
-				throw UnexpectedError.of(e)
+				throw UnexpectedError(e)
 			}
 			return UserCancelled.of()
 		},
-	})
+	}).pipe(Effect.withSpan('openEditor'))
 
 export const createSchemaFile = Effect.gen(function* (_) {
 	const fs = yield* _(FileSystem.FileSystem)
@@ -33,4 +33,8 @@ export const createSchemaFile = Effect.gen(function* (_) {
 	yield* _(fs.writeFileString(filePath, JSON.stringify(createSchema())))
 
 	return filePath
-}).pipe(Effect.tapError(Effect.logError), Effect.option)
+}).pipe(
+	Effect.tapError(Effect.logError),
+	Effect.catchAll(Effect.die),
+	Effect.withSpan('createSchemaFile'),
+)
