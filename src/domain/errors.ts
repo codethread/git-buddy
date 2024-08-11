@@ -31,6 +31,7 @@ export class UninitialisedCli extends Data.TaggedError('UninitialisedCli')<{
 	}
 }
 
-export const UnexpectedError = (e: unknown) => Effect.die(String(e))
+export const UnexpectedError = (e: unknown, msg: string = '') =>
+	Effect.die(msg + String(e))
 
 export class InvalidTestSetup extends Error {}

@@ -9,7 +9,7 @@ import { decodeJson } from '../utils/schemas.js'
 import { FileSystem } from '@effect/platform'
 import { createSchemaFile, openEditor } from './prompt/helpers.js'
 
-export type PromptErrors = UserCancelled | InvalidConfig
+export type PromptErrors = InvalidConfig
 
 interface EditorOptions {
 	ext: 'json' | 'txt'
@@ -35,7 +35,6 @@ export const PromptLive = Layer.succeed(
 
 				yield* _(
 					openEditor({
-						// name: toolName + toolVersion,
 						message: 'Edit configuration',
 						postfix: opts.ext === 'json' ? '.json' : '.txt',
 						default: JSON.stringify(
@@ -49,6 +48,7 @@ export const PromptLive = Layer.succeed(
 					}),
 				)
 			}).pipe(
+				Effect.tap(Effect.logDebug),
 				Effect.andThen(decodeJson),
 				Effect.andThen(decodeUserSettings),
 				Effect.mapError((e) =>

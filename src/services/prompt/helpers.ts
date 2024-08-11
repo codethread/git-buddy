@@ -12,11 +12,20 @@ export const openEditor = (options: Parameters<typeof editor>[0]) =>
 		try: () => editor(options),
 		catch: (e) => {
 			if (typeof e === 'object' && e !== null && 'isTtyError' in e) {
-				throw UnexpectedError(e)
+				throw UnexpectedError(e, 'Not a terminal\n')
 			}
 			return UserCancelled.of()
 		},
-	}).pipe(Effect.withSpan('openEditor'))
+	}).pipe(
+		Effect.tapBoth({
+			onFailure: Effect.logError,
+			onSuccess: Effect.logDebug,
+		}),
+		Effect.catchTag('UserCancelled', (e) =>
+			UnexpectedError(e, 'User cancelled, please raise a bug\n'),
+		),
+		Effect.withSpan('openEditor'),
+	)
 
 export const createSchemaFile = Effect.gen(function* (_) {
 	const fs = yield* _(FileSystem.FileSystem)

@@ -3,8 +3,8 @@ import * as O from 'effect/Option'
 
 export interface RootOptions {
 	_set?: boolean
-	gitlabRepo: O.Option<string>
-	gitlabToken: O.Option<Redacted<string>>
+	readonly gitlabRepo: O.Option<string>
+	readonly gitlabToken: O.Option<Redacted<string>>
 }
 
 export const defaultRootOptions: RootOptions = {

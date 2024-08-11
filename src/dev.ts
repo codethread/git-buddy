@@ -4,7 +4,7 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { Console, Effect, LogLevel, Logger } from 'effect'
 import { program } from './main.js'
 
-export const args: string[] = []
+export const args: string[] = ['_test']
 
 const NodeSdkLive = NodeSdk.layer(() => ({
 	resource: { serviceName: 'git-buddy' },

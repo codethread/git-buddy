@@ -1,11 +1,9 @@
 import { Command, Options } from '@effect/cli'
 import { version, name } from '../utils/version.js' with { type: 'macro' }
-import { Console, Effect, Option, Redacted } from 'effect'
-import { Config } from '../services/settings.js'
+import { Console, Effect } from 'effect'
 import { openCommand } from './open.js'
-import { pipelineCommand } from './pipeline.js'
-import { ConfigSchema, type ConfigJson } from '../services/settings/schema.js'
-import { Schema, Serializable } from '@effect/schema'
+import { Db } from '../services/db.js'
+import { CliLive } from '../services/layers.js'
 
 const gitlabRepo = Options.text('repo').pipe(
 	Options.optional,
@@ -20,18 +18,14 @@ const gitlabToken = Options.redacted('token').pipe(
 export const rootCommand = Command.make(
 	'git-buddy',
 	{ gitlabRepo, gitlabToken },
-	(rootArgs) =>
+	() =>
 		Effect.gen(function* (_) {
-			const config = yield* _(Config)
-			yield* _(config.applyRootOptions(rootArgs))
-
-			const {
-				cli: { hideBuiltinHelp },
-			} = yield* _(config.config)
+			const db = yield* _(Db)
+			const settings = yield* _(db.getAll)
 
 			yield* Console.log(
 				`Hi there! pass --help to see what I can do.${
-					hideBuiltinHelp
+					settings.cli.hideBuiltinHelp
 						? `
 
 Looks like you have hideBuiltinHelp=true! This means I won't display the builtin help options, I'm sure you know what you are doing, but just in case you can run me with:
@@ -43,25 +37,17 @@ BUDDY_HIDE_BUILTIN=false git-buddy --help`
 		}).pipe(Effect.withSpan('rootCmd')),
 )
 
-/**
- * Store any root options in config for later used. MUST be called by all
- * commands expecting to read from config
- */
-export const applyRootArgs = Effect.gen(function* (_) {
-	const rootArgs = yield* _(rootCommand)
-	const config = yield* _(Config)
-	yield* _(config.applyRootOptions(rootArgs))
-}).pipe(Effect.withSpan('applyRootArgs'))
-
 const testCommand = Command.make('_test', {}, () =>
 	Effect.gen(function* (_) {
-		const message = `Hello Bun! ${version()}`
-		yield* _(Console.log(message))
+		yield* _(Console.log(`Hello Bun! ${version()}`))
 	}).pipe(Effect.withSpan('testCmd')),
 ).pipe(Command.withDescription('ignore me'))
 
 export const cli = rootCommand.pipe(
-	Command.withSubcommands([testCommand, openCommand, pipelineCommand]),
+	Command.withSubcommands([
+		Command.provide(openCommand, CliLive),
+		Command.provide(testCommand, CliLive),
+	]),
 	Command.run({
 		name: name(),
 		version: version(),
