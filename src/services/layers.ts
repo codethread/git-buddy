@@ -13,11 +13,7 @@ export const AppConfigLive = Layer.effect(
 		} = yield* _(db.getAll)
 
 		return CliConfig.make({ showBuiltIns: !hideBuiltinHelp })
-	}).pipe(
-		Effect.provide(DbLive),
-		Effect.provide(PromptLive),
-		Effect.withSpan('AppConfigLive'),
-	),
+	}).pipe(Effect.provide(DbLive), Effect.withSpan('AppConfigLive')),
 )
 
 // export const CliLive = Layer.mergeAll(

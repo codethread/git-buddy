@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "NODE_ENV=development bun --watch run src/dev.ts",
+		"dev:once": "NODE_ENV=development bun run src/dev.ts",
 		"ts": "tsc --noEmit --watch",
 		"checks": "bun test:format && bun test:ts && bun test:unit",
 		"format": "prettier --write .",
@@ -39,7 +40,7 @@
 		"@effect/cli": "^0.39.2",
 		"@effect/platform": "^0.61.2",
 		"@effect/platform-bun": "^0.40.3",
-		"@effect/schema": "^0.69.2",
+		"@effect/schema": "^0.69.3",
 		"@inquirer/editor": "^2.1.17",
 		"conf": "^13.0.1",
 		"effect": "^3.6.0",

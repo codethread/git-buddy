@@ -1,10 +1,10 @@
 import { Context, Effect, Layer, Option } from 'effect'
-import { Prompt, type PromptErrors } from './prompt.js'
+import { Prompt, PromptLive, type PromptErrors } from './prompt.js'
 import { getEnvs } from './settings/getEnvs.js'
 import { type UserConfig } from './settings/schema.js'
 import type { FileSystem } from '@effect/platform'
 import { rootCommand } from '../cli/cli.js'
-import { Db } from './db.js'
+import { Db, DbLive } from './db.js'
 import { mergeConfigs } from './settings/mergeConfigs.js'
 
 export class Config extends Context.Tag('ct/Config')<
@@ -46,7 +46,11 @@ export const ConfigLive = Layer.effect(
 				})
 			}).pipe(Effect.withSpan('Config.config')),
 		})
-	}).pipe(Effect.withSpan('ConfigLive')),
+	}).pipe(
+		Effect.provide(DbLive),
+		Effect.provide(PromptLive),
+		Effect.withSpan('ConfigLive'),
+	),
 )
 
 export const getSettings = Config.pipe(

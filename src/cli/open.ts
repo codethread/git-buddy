@@ -1,6 +1,6 @@
 import { Command, Prompt } from '@effect/cli'
 import { Config } from '../services/settings.js'
-import { Console, Effect } from 'effect'
+import { Console, Effect, Option, Redacted } from 'effect'
 import { CliLive } from '../services/layers.js'
 
 export const openCommand = Command.make('open', {}, () =>
@@ -14,5 +14,11 @@ export const openCommand = Command.make('open', {}, () =>
 		)
 		const news = yield* _(settings.config)
 		yield* _(Console.log('Settings saved!', news))
+		const y = yield* _(
+			news.gitlab,
+			Option.andThen((_) => _.token),
+			Option.andThen(Redacted.value),
+		)
+		yield* _(Console.log({ y }))
 	}).pipe(Effect.withSpan('openCmd')),
 ).pipe(Command.withDescription('Update settings in your editor'))

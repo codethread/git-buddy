@@ -4,14 +4,16 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { Console, Effect, LogLevel, Logger } from 'effect'
 import { program } from './main.js'
 
-export const args: string[] = ['_test']
+export const args: string[] = ['open']
 
 const NodeSdkLive = NodeSdk.layer(() => ({
 	resource: { serviceName: 'git-buddy' },
 	spanProcessor: new BatchSpanProcessor(new OTLPTraceExporter()),
 }))
 
-program(args.length ? ['bun', 'bun'].concat(args) : process.argv).pipe(
+program(
+	process.argv.length > 2 ? process.argv : ['bun', 'bun'].concat(args),
+).pipe(
 	Effect.tap(Console.log('✓ Done')),
 	Effect.provide(Logger.pretty),
 	// Effect.provide(Logger.replace(Logger.defaultLogger, Logger.none)),

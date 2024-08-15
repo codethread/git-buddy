@@ -8,7 +8,7 @@ import {
 import { getEnvs } from './settings/getEnvs.js'
 import Conf from 'conf'
 import { name, version } from '../utils/version.js'
-import { recoverFromInvalidConfig } from './settings/helpers.js'
+import { ConfigRecovery, ConfigRecoveryLive } from './settings/helpers.js'
 import { mergeConfigs } from './settings/mergeConfigs.js'
 import { UnexpectedError } from '../domain/errors.js'
 
@@ -30,15 +30,16 @@ export const DbLive = Layer.effect(
 			projectVersion: version(),
 			defaults: defaultConfigJson,
 		})
+		const validator = yield* _(ConfigRecovery)
 
 		// validating now means reading config is guaranteed to work and simplifies callers
-		const db = yield* _(recoverFromInvalidConfig(store.store))
+		const db = yield* _(validator.validateWithIntervention(store.store))
 		store.store = yield* _(serialiseConfiig(db))
 
 		return Db.of({
 			getAll: Effect.gen(function* (_) {
 				return mergeConfigs({ db, envs, rootOptions: Option.none() })
-			}).pipe(Effect.withSpan('Db.of')),
+			}).pipe(Effect.withSpan('Db.getAll')),
 
 			getSerialised: Effect.gen(function* (_) {
 				return yield* _(serialiseConfiig(db))
@@ -59,8 +60,8 @@ export const DbLive = Layer.effect(
 					return config
 				}).pipe(
 					Effect.catchTag('ParseError', (e) => UnexpectedError(e)),
-					Effect.withSpan('Db.of'),
+					Effect.withSpan('Db.setAll'),
 				),
 		})
-	}).pipe(Effect.withSpan('DbLive')),
+	}).pipe(Effect.provide(ConfigRecoveryLive), Effect.withSpan('DbLive')),
 )
