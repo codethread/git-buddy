@@ -1,5 +1,5 @@
 import Conf from 'conf'
-import { Console, Context, Effect, Layer, Option } from 'effect'
+import { Console, Context, Effect, Layer, Match, Option } from 'effect'
 
 import { UnexpectedError } from '_/domain/errors.js'
 import {
@@ -12,8 +12,9 @@ import {
 import { name, version } from '_/utils/version.js'
 
 import { getEnvs } from '../envs/envs.service.js'
+import { Prompt } from '../prompt/prompt.service.js'
 import { mergeSettings } from '../settings/mergeConfigs.js'
-import { ConfigRecovery, ConfigRecoveryLive } from './recovery.js'
+import { validateOrManuallyUpdate } from './validator.js'
 
 export class Db extends Context.Tag('ct/Db')<
 	Db,
@@ -28,22 +29,37 @@ export const DbLive = Layer.effect(
 	Db,
 	Effect.gen(function* (_) {
 		const envs = yield* _(getEnvs)
+		const prompt = yield* _(Prompt)
+
 		const store = new Conf<StoredUserSettings>({
 			projectName: name(),
 			projectVersion: version(),
 			defaults: defaultConfigJson,
 		})
-		const validator = yield* _(ConfigRecovery)
 
 		// validating now means reading config is guaranteed to work and simplifies callers
-		store.store = yield* _(
-			validator.validateWithIntervention(store.store),
-			Effect.andThen(serialiseConfiig),
+		const validated = yield* _(validateOrManuallyUpdate(prompt, store.store))
+
+		// update the stored value if the config was updatd
+		yield* _(
+			validated,
+			Match.value,
+			Match.tag('Updated', ({ config }) =>
+				serialiseConfiig(config).pipe(
+					Effect.tap((s) => {
+						store.store = s
+					}),
+				),
+			),
+			Match.orElse(() => Effect.void),
 		)
+
+		/** access the store, from this point on we expect this to succeed */
 		const readDb = () =>
 			decodeUserSettings(store.store).pipe(
 				Effect.catchTag('ParseError', (e) => UnexpectedError(e)),
 			)
+		debugger
 
 		return Db.of({
 			getAll: Effect.gen(function* (_) {
@@ -67,7 +83,6 @@ export const DbLive = Layer.effect(
 			setAll: (config) =>
 				Effect.gen(function* (_) {
 					const cereal = yield* _(serialiseConfiig(config))
-					yield* _(Console.log(cereal))
 					store.store = cereal
 					return config
 				}).pipe(
@@ -75,5 +90,5 @@ export const DbLive = Layer.effect(
 					Effect.withSpan('Db.setAll'),
 				),
 		})
-	}).pipe(Effect.provide(ConfigRecoveryLive), Effect.withSpan('DbLive')),
+	}).pipe(Effect.withSpan('DbLive')),
 )
