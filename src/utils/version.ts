@@ -1,9 +1,9 @@
-import pj from '../../package.json'
+import { pjName, pjVersion } from './macros.js' with {type: 'macro'};
 
 export function version() {
-	return pj.version
+	return pjVersion()
 }
 
 export function name() {
-	return pj.name
+	return pjName()
 }

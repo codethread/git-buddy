@@ -3,7 +3,7 @@ import { Console, Effect } from 'effect'
 
 import { Db } from '../services/db/db.service.js'
 import { CliLive } from '../services/layers.js'
-import { name, version } from '../utils/version.js' with { type: 'macro' }
+import { name, version } from '../utils/version.js'
 import { openCommand } from './open.js'
 
 const gitlabRepo = Options.text('repo').pipe(
