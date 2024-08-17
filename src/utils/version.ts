@@ -1,4 +1,4 @@
-import { pjName, pjVersion } from './macros.js' with {type: 'macro'};
+import { pjName, pjVersion } from './macros.js' with { type: 'macro' }
 
 export function version() {
 	return pjVersion()
