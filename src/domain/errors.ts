@@ -1,6 +1,7 @@
 import { ParseError } from '@effect/schema/ParseResult'
 import { Data, Effect } from 'effect'
-import type { ConfigSchema } from '../services/settings/schema.js'
+
+import type { UserSettings } from './userSettings.js'
 
 export class InvalidConfig extends Data.TaggedError('InvalidConfig')<{
 	readonly error: ParseError
@@ -24,7 +25,7 @@ export class UserCancelled extends Data.TaggedError('UserCancelled')<{}> {
 }
 
 export class UninitialisedCli extends Data.TaggedError('UninitialisedCli')<{
-	readonly store: ConfigSchema
+	readonly store: UserSettings
 }> {
 	override toString(): string {
 		return `Accessing settings before Root Settings merged`

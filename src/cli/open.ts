@@ -1,18 +1,19 @@
 import { Command, Prompt } from '@effect/cli'
-import { Config } from '../services/settings.js'
 import { Console, Effect, Option, Redacted } from 'effect'
+
 import { CliLive } from '../services/layers.js'
+import { Settings } from '../services/settings/settings.service.js'
 
 export const openCommand = Command.make('open', {}, () =>
 	Effect.gen(function* (_) {
 		yield* _(Console.log('open'))
-		const settings = yield* _(Config)
+		const settings = yield* _(Settings)
 		yield* _(
 			settings.open,
 			Effect.tapErrorTag('InvalidConfig', (e) => Console.log(String(e))),
 			Effect.retry({ while: (e) => Boolean(e) }),
 		)
-		const news = yield* _(settings.config)
+		const news = yield* _(settings.getAll)
 		yield* _(Console.log('Settings saved!', news))
 		const y = yield* _(
 			news.gitlab,

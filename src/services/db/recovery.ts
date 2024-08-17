@@ -1,22 +1,28 @@
-import { Effect, Console, Match, Context, Layer } from 'effect'
+import { Console, Context, Effect, Layer, Match } from 'effect'
+
 import {
 	InvalidConfig,
 	UnexpectedError,
 	UserCancelled,
-} from '../../domain/errors.js'
-import { decodeUserSettings, type UserConfig } from './schema.js'
-import { Prompt, PromptLive, type PromptService } from '../prompt.js'
+} from '_/domain/errors.js'
+import { type UserSettings, decodeUserSettings } from '_/domain/userSettings.js'
+
+import {
+	Prompt,
+	PromptLive,
+	type PromptService,
+} from '../prompt/prompt.service.js'
 
 /**
- * This service isn't to be confused with Config itself, it's merely for Db to
+ * This service isn't to be confused with Settings itself, it's merely for Db to
  * boot correctly
  */
-export class ConfigRecovery extends Context.Tag('ct/ConfigRecovery')<
+export class ConfigRecovery extends Context.Tag('ct/SettingsRecovery')<
 	ConfigRecovery,
 	{
 		readonly validateWithIntervention: (
 			config: unknown,
-		) => Effect.Effect<UserConfig, InvalidConfig | UserCancelled>
+		) => Effect.Effect<UserSettings, InvalidConfig | UserCancelled>
 	}
 >() {}
 
@@ -41,7 +47,7 @@ export const ConfigRecoveryLive = Layer.effect(
 						),
 						Match.orElse((valid) => Effect.succeed(valid)),
 					)
-				}).pipe(Effect.withSpan('recoverFromInvalidConfig')),
+				}).pipe(Effect.withSpan('ConfigRecovery.validateWithIntervention')),
 		})
 	}).pipe(Effect.provide(PromptLive), Effect.withSpan('ConfigRecoveryLive')),
 )

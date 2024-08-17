@@ -1,12 +1,10 @@
-import editor from '@inquirer/editor'
-import path from 'node:path'
 import { FileSystem } from '@effect/platform'
-import { Context, Effect, Layer, Redacted } from 'effect'
-import envPaths from 'env-paths'
-import { UnexpectedError, UserCancelled } from '../../domain/errors.js'
-import { createSchema, type ConfigJson } from '../settings/schema.js'
-import { name } from '../../utils/version.js'
 import { BunFileSystem } from '@effect/platform-bun'
+import { Context, Effect, Layer } from 'effect'
+import path from 'node:path'
+
+import { createSchema } from '_/domain/userSettings.js'
+import { paths } from '_/utils/paths.js'
 
 export class Fs extends Context.Tag('ct/Fs')<
 	Fs,
@@ -22,8 +20,8 @@ export const FsLive = Layer.effect(
 
 		return Fs.of({
 			createSchemaFile: Effect.gen(function* (_) {
-				const { data: dir } = envPaths(name())
-				const filePath = path.join(dir, 'schema.json')
+				const { data: dir } = paths
+				const filePath = path.join(dir, 'config.json')
 
 				yield* _(fs.makeDirectory(dir)).pipe(
 					Effect.catchIf(

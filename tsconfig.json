@@ -1,7 +1,10 @@
 {
 	"extends": "@total-typescript/tsconfig/tsc/no-dom/app",
 	"compilerOptions": {
-		"exactOptionalPropertyTypes": true
+		"exactOptionalPropertyTypes": true,
+		"paths": {
+			"_/*": ["./src/*"]
+		}
 	},
 	"include": ["src"]
 }

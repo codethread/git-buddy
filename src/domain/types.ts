@@ -1,5 +1,5 @@
-import type { Redacted } from 'effect/Redacted'
 import * as O from 'effect/Option'
+import type { Redacted } from 'effect/Redacted'
 
 export interface RootOptions {
 	_set?: boolean

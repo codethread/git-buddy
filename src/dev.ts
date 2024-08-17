@@ -1,7 +1,9 @@
 import { NodeSdk } from '@effect/opentelemetry'
-import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base'
+import { BunRuntime } from '@effect/platform-bun'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
+import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import { Console, Effect, LogLevel, Logger } from 'effect'
+
 import { program } from './main.js'
 
 export const args: string[] = ['open']
@@ -20,5 +22,8 @@ program(
 	Logger.withMinimumLogLevel(LogLevel.All),
 	Effect.provide(NodeSdkLive),
 	Effect.catchAllCause(Effect.logError),
-	Effect.runPromise,
+	(program) =>
+		BunRuntime.runMain(program, {
+			teardown: (_exit, _) => {},
+		}),
 )

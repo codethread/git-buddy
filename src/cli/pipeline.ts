@@ -1,6 +1,7 @@
-import { Console, Effect } from 'effect'
 import { Command } from '@effect/cli'
-import { getSettings } from '../services/settings.js'
+import { Console, Effect } from 'effect'
+
+import { getSettings } from '../services/settings/settings.service.js'
 
 export const pipelineCommand = Command.make('pipeline', {}, () =>
 	Effect.gen(function* (_) {

@@ -1,9 +1,10 @@
 import { Command, Options } from '@effect/cli'
-import { version, name } from '../utils/version.js' with { type: 'macro' }
 import { Console, Effect } from 'effect'
-import { openCommand } from './open.js'
-import { Db } from '../services/db.js'
+
+import { Db } from '../services/db/db.service.js'
 import { CliLive } from '../services/layers.js'
+import { name, version } from '../utils/version.js' with { type: 'macro' }
+import { openCommand } from './open.js'
 
 const gitlabRepo = Options.text('repo').pipe(
 	Options.optional,

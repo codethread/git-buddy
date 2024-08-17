@@ -21,6 +21,7 @@
 	},
 	"devDependencies": {
 		"@effect/opentelemetry": "^0.35.2",
+		"@miller-svt/prettier-plugin-sort-imports": "^4.4.1",
 		"@opentelemetry/exporter-trace-otlp-http": "^0.52.1",
 		"@opentelemetry/sdk-trace-node": "^1.25.1",
 		"@opentelemetry/sdk-trace-web": "^1.25.1",

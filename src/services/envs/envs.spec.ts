@@ -1,6 +1,7 @@
-import { test, expect, describe } from 'bun:test'
-import { Effect, ConfigProvider, Option } from 'effect'
-import { getEnvs } from './getEnvs.js'
+import { describe, expect, test } from 'bun:test'
+import { ConfigProvider, Effect, Option } from 'effect'
+
+import { getEnvs } from '../envs/envs.service.js'
 
 describe('getEnvs', () => {
 	const scenario = (envs: Record<string, string>) =>

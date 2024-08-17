@@ -1,22 +1,24 @@
 import { Option } from 'effect'
-import { ConfigSchema, type UserConfig } from './schema.js'
-import type { RootOptions } from '../../domain/types.js'
-import type { Envs } from './getEnvs.js'
+
+import type { RootOptions } from '_/domain/types.js'
+import { UserSettings } from '_/domain/userSettings.js'
+
+import type { Envs } from '../envs/envs.service.js'
 
 /**
  * Merge user config, overriding with any environment options, and finally any
  * inline root settings
  */
-export const mergeConfigs = ({
+export const mergeSettings = ({
 	rootOptions,
 	envs,
 	db,
 }: {
 	rootOptions: Option.Option<RootOptions>
 	envs: Envs
-	db: UserConfig
-}): UserConfig => {
-	return ConfigSchema.make({
+	db: UserSettings
+}): UserSettings => {
+	return UserSettings.make({
 		...db,
 		cli: {
 			hideBuiltinHelp: envs.hideBuiltin.pipe(

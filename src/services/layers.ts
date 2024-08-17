@@ -1,8 +1,9 @@
 import { CliConfig } from '@effect/cli'
-import { Layer, Effect } from 'effect'
-import { PromptLive } from './prompt.js'
-import { Db, DbLive } from './db.js'
-import { ConfigLive } from './settings.js'
+import { Effect, Layer } from 'effect'
+
+import { Db, DbLive } from './db/db.service.js'
+import { PromptLive } from './prompt/prompt.service.js'
+import { SettingsLive } from './settings/settings.service.js'
 
 export const AppConfigLive = Layer.effect(
 	CliConfig.CliConfig,
@@ -19,4 +20,4 @@ export const AppConfigLive = Layer.effect(
 // export const CliLive = Layer.mergeAll(
 // 	ConfigLive.pipe(Layer.provide(PromptLive), Layer.provide(DbLive)),
 // )
-export const CliLive = ConfigLive
+export const CliLive = SettingsLive
