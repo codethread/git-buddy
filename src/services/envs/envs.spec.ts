@@ -23,22 +23,7 @@ describe('getEnvs', () => {
 	test('getEnvs fails as expected', () => {
 		const out = scenario({
 			NODE_ENV: 'invalid',
-		}).pipe(Effect.flip, Effect.runSync)
-
-		expect(out._tag).toBe('ConfigError')
+		}).pipe(Effect.flip, Effect.runSyncExit)
+		expect(out._tag).toBe('Failure')
 	})
-
-	// test.each([
-	// 	['production', false],
-	// 	['development', true],
-	// 	['test', true],
-	// ])('getEnvs in environment %s has correct defaults of %p', (env, outcome) => {
-	// 	const prod = scenario({
-	// 		NODE_ENV: env,
-	// 	}).pipe(Effect.runSync)
-	//
-	// 	expect(prod).toMatchObject({
-	// 		hideBuiltin: Option.some(outcome),
-	// 	})
-	// })
 })

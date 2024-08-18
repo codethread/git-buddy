@@ -13,7 +13,7 @@ export class Fs extends Context.Tag('ct/Fs')<
 	}
 >() {}
 
-export const FsLive = Layer.effect(
+export const FsLive: Layer.Layer<Fs> = Layer.effect(
 	Fs,
 	Effect.gen(function* (_) {
 		const fs = yield* _(FileSystem.FileSystem)

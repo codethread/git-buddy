@@ -24,7 +24,8 @@ const envs = {
 	gitlabToken: Config.redacted('BUDDY_GITLAB_TOKEN').pipe(Config.option),
 } satisfies EnvStruct
 
-export const getEnvs = Config.all(envs).pipe(
+export const getEnvs: Effect.Effect<Envs> = Config.all(envs).pipe(
+	Effect.orDie,
 	Effect.andThen((envs) => new Envs(envs)),
 	Effect.tap(Effect.logDebug),
 	Effect.withSpan('getEnvs'),

@@ -34,7 +34,7 @@ export class Prompt extends Context.Tag('ct/Prompt')<
 
 export type PromptService = Context.Tag.Service<Prompt>
 
-export const PromptLive = Layer.effect(
+export const PromptLive: Layer.Layer<Prompt> = Layer.effect(
 	Prompt,
 	Effect.gen(function* (_) {
 		const fs = yield* _(Fs)
