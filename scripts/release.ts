@@ -1,4 +1,5 @@
 import { $ } from 'bun'
+
 import pj from '../package.json'
 
 const [bump] = process.argv.slice(2)

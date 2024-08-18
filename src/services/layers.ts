@@ -1,19 +1,23 @@
 import { CliConfig } from '@effect/cli'
-import { Layer, Effect } from 'effect'
-import { getSettings, SettingsLive } from './settings.js'
-import { PromptLive } from './prompt.js'
+import { Effect, Layer } from 'effect'
 
-const AppSettingsLive = SettingsLive.pipe(Layer.provide(PromptLive))
+import { Db, DbLive } from './db/db.service.js'
+import { PromptLive } from './prompt/prompt.service.js'
+import { SettingsLive } from './settings/settings.service.js'
 
-const CliConfigLive = Layer.effect(
+export const AppConfigLive = Layer.effect(
 	CliConfig.CliConfig,
 	Effect.gen(function* (_) {
+		const db = yield* _(Db)
 		const {
 			cli: { hideBuiltinHelp },
-		} = yield* _(getSettings)
+		} = yield* _(db.getAll)
 
 		return CliConfig.make({ showBuiltIns: !hideBuiltinHelp })
-	}),
-).pipe(Layer.provide(AppSettingsLive))
+	}).pipe(Effect.provide(DbLive), Effect.withSpan('AppConfigLive')),
+)
 
-export const AppLive = Layer.merge(CliConfigLive, AppSettingsLive)
+// export const CliLive = Layer.mergeAll(
+// 	ConfigLive.pipe(Layer.provide(PromptLive), Layer.provide(DbLive)),
+// )
+export const CliLive = SettingsLive

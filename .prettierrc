@@ -1,5 +1,11 @@
 {
-  "singleQuote": true,
-  "semi": false,
-  "useTabs": true
+	"singleQuote": true,
+	"semi": false,
+	"useTabs": true,
+	"importOrder": ["^_/(.*)$", "^[./]"],
+	"importOrderSeparation": true,
+	"importOrderSortSpecifiers": true,
+	"importOrderGroupNamespaceSpecifiers": true,
+	"importOrderParserPlugins": ["typescript", "importAttributes"],
+	"plugins": ["@miller-svt/prettier-plugin-sort-imports"]
 }
