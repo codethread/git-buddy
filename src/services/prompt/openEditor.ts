@@ -8,7 +8,7 @@ export function openEditor(options: Parameters<typeof editor>[0]) {
 		try: () => editor(options),
 		catch: (e) => {
 			if (typeof e === 'object' && e !== null && 'isTtyError' in e) {
-				throw UnexpectedError(e, 'Not a terminal\n')
+				throw Error(`Not a terminal\n${String(e)}`)
 			}
 			return UserCancelled.of()
 		},

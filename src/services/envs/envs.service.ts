@@ -14,7 +14,7 @@ export class Envs extends Data.Class<{
 	}
 }
 
-type EnvStruct = Record<keyof Envs, any>
+type EnvStruct = Record<keyof Envs, unknown>
 
 const envs = {
 	nodenv: Config.literal(...nodenvs)('NODE_ENV').pipe(

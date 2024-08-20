@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import { ParseError } from '@effect/schema/ParseResult'
 import { Data, Effect } from 'effect'
 
@@ -11,7 +12,7 @@ export class InvalidConfig extends Data.TaggedError('InvalidConfig')<{
 	}
 
 	override toString(): string {
-		return `Invalid config provided. See the docs for info.\n${this.error}`
+		return `Invalid config provided. See the docs for info.\n${String(this.error)}`
 	}
 }
 
