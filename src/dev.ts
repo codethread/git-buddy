@@ -6,7 +6,7 @@ import { Console, Effect, LogLevel, Logger } from 'effect'
 
 import { program } from './main.js'
 
-export const args: string[] = ['open']
+export const args: string[] = ['pipeline']
 
 const NodeSdkLive = NodeSdk.layer(() => ({
 	resource: { serviceName: 'git-buddy' },

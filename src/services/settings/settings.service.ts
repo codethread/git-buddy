@@ -26,6 +26,8 @@ export class Settings extends Context.Tag('ct/Settings')<
 	}
 >() {}
 
+export type SettingsService = Context.Tag.Service<Settings>
+
 export const SettingsLive = Layer.effect(
 	Settings,
 	Effect.gen(function* (_) {

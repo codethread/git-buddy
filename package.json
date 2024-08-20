@@ -7,7 +7,7 @@
 		"dev": "NODE_ENV=development bun --watch run src/dev.ts",
 		"dev:once": "bun run src/dev.ts",
 		"ts": "tsc --noEmit --watch",
-		"checks": "bun test:format && bun test:ts && bun test:unit",
+		"checks": "bun test:format && bun lint && bun test:ts && bun test:unit",
 		"format": "prettier --write .",
 		"start": "bun run src/prod.ts",
 		"build": "bun run scripts/build.ts",
