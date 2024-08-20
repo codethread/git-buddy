@@ -14,7 +14,7 @@ const Conf = Data.taggedEnum<Conf>()
 
 export function validateOrManuallyUpdate(
 	prompt: PromptService,
-	config: unknown,
+	config: object,
 ): Effect.Effect<Conf, InvalidConfig | UserCancelled> {
 	return Effect.gen(function* (_) {
 		const validated = yield* _(decodeUserSettings(config), Effect.merge)
@@ -34,7 +34,7 @@ export function validateOrManuallyUpdate(
 	}).pipe(Effect.withSpan('validateWithIntervention'))
 }
 
-function promptAndEdit(prompt: PromptService, input: any) {
+function promptAndEdit(prompt: PromptService, input: object) {
 	return Effect.gen(function* (_) {
 		const deal = yield* _(
 			prompt.confirm('config is invalid, would you like to correct it?'),

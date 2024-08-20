@@ -59,7 +59,6 @@ export const DbLive = Layer.effect(
 			decodeUserSettings(store.store).pipe(
 				Effect.catchTag('ParseError', (e) => UnexpectedError(e)),
 			)
-		debugger
 
 		return Db.of({
 			getAll: Effect.gen(function* (_) {

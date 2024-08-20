@@ -24,7 +24,7 @@ export class Prompt extends Context.Tag('ct/Prompt')<
 	{
 		/** open a file and return the value after updated */
 		readonly editor: (
-			content: StoredUserSettings,
+			content: object,
 			opts?: EditorOptions,
 		) => Effect.Effect<UserSettings, PromptErrors>
 
@@ -46,7 +46,7 @@ export const PromptLive: Layer.Layer<Prompt> = Layer.effect(
 					// XXX: no idea if this is a bad idea here, time will tell
 					Effect.provide(BunTerminal.layer),
 				),
-			editor: ({ $schema, ...content }, opts = { ext: 'json' }) =>
+			editor: (content, opts = { ext: 'json' }) =>
 				Effect.gen(function* (_) {
 					const $schema = yield* _(fs.createSchemaFile)
 
@@ -56,8 +56,8 @@ export const PromptLive: Layer.Layer<Prompt> = Layer.effect(
 							postfix: opts.ext === 'json' ? '.json' : '.txt',
 							default: JSON.stringify(
 								{
-									$schema: $schema,
 									...content,
+									$schema: $schema,
 								},
 								null,
 								2,
@@ -70,8 +70,8 @@ export const PromptLive: Layer.Layer<Prompt> = Layer.effect(
 					Effect.andThen(decodeUserSettings),
 					Effect.mapError((e) =>
 						Match.value(e).pipe(
-							Match.tag('ParseError', InvalidConfig.of),
-							Match.orElse((_) => _),
+							Match.tag('ParseError', (e) => InvalidConfig.of(e)),
+							Match.exhaustive,
 						),
 					),
 					Effect.withSpan('Prompt.editor'),
