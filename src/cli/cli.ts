@@ -5,6 +5,7 @@ import { Db } from '../services/db/db.service.js'
 import { CliLive } from '../services/layers.js'
 import { name, version } from '../utils/version.js'
 import { openCommand } from './open.js'
+import { pipelineCommand } from './pipeline.js'
 
 const gitlabRepo = Options.text('repo').pipe(
 	Options.optional,
@@ -48,6 +49,7 @@ export const cli = rootCommand.pipe(
 	Command.withSubcommands([
 		Command.provide(openCommand, CliLive),
 		Command.provide(testCommand, CliLive),
+		Command.provide(pipelineCommand, CliLive),
 	]),
 	Command.run({
 		name: name(),

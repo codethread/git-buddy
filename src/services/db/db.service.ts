@@ -1,5 +1,5 @@
 import Conf from 'conf'
-import { Console, Context, Effect, Layer, Match, Option } from 'effect'
+import { Context, Effect, Layer, Match, Option } from 'effect'
 
 import { UnexpectedError } from '_/domain/errors.js'
 import {
@@ -24,6 +24,8 @@ export class Db extends Context.Tag('ct/Db')<
 		readonly getSerialised: Effect.Effect<StoredUserSettings>
 	}
 >() {}
+
+export type DbService = Context.Tag.Service<Db>
 
 export const DbLive = Layer.effect(
 	Db,

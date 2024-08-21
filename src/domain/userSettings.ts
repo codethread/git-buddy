@@ -1,5 +1,4 @@
 import { JSONSchema, Schema as S, Serializable } from '@effect/schema'
-import { Option } from 'effect'
 
 /** Make a schema value optional */
 export const Maybe = <A, I, R>(s: S.Schema<A, I, R>) =>
