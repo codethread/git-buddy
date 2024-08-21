@@ -3,11 +3,7 @@ import { BunTerminal } from '@effect/platform-bun'
 import { Context, Effect, Layer, Match, Redacted } from 'effect'
 
 import { InvalidConfig } from '_/domain/errors.js'
-import {
-	type StoredUserSettings,
-	type UserSettings,
-	decodeUserSettings,
-} from '_/domain/userSettings.js'
+import { type UserSettings, decodeUserSettings } from '_/domain/userSettings.js'
 import { decodeJson } from '_/utils/schemas.js'
 
 import { Fs, FsLive } from '../fs/fs.service.js'

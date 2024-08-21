@@ -24,8 +24,10 @@ export const openCommand = Command.make('open', { view }, (args) =>
 		yield* _(
 			view,
 			Option.match({
-				onSome: () => runView(db),
-				onNone: () => runOpen(settings),
+				onSome: (view) => (view ? runView(db) : runOpen(settings)),
+				onNone: () => {
+					throw new Error('???')
+				},
 			}),
 		)
 	}).pipe(Effect.withSpan('openCmd')),

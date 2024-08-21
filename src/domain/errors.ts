@@ -16,6 +16,17 @@ export class InvalidConfig extends Data.TaggedError('InvalidConfig')<{
 	}
 }
 
+export class InvalidArgs extends Data.TaggedError('InvalidArgs')<{
+	readonly message: string
+}> {
+	static of(message: string) {
+		return new InvalidArgs({ message })
+	}
+	override toString(): string {
+		return `Invalid argument provided. ${this.message}`
+	}
+}
+
 export class UserCancelled extends Data.TaggedError('UserCancelled')<{}> {
 	static of() {
 		return new UserCancelled()
@@ -30,6 +41,38 @@ export class UninitialisedCli extends Data.TaggedError('UninitialisedCli')<{
 }> {
 	override toString(): string {
 		return `Accessing settings before Root Settings merged`
+	}
+}
+
+export class RemoteError extends Data.TaggedError('RemoteError')<{
+	readonly url: string
+	readonly message: string
+}> {
+	override toString(): string {
+		return `There was a problem making a request to ${this.url}\n${this.message}`
+	}
+}
+
+export class RemoteInvalidData extends Data.TaggedError('RemoteInvalidData')<{
+	readonly parseError: ParseError
+	readonly res: unknown
+}> {
+	override toString(): string {
+		return `${JSON.stringify(this.res)}\n${String(this.parseError)}`
+	}
+}
+
+export class NoInternet extends Data.TaggedError('NoInternet') {
+	override toString(): string {
+		return `no internet`
+	}
+}
+
+export class MissingAuth extends Data.TaggedError('MissingAuth')<{
+	readonly service: string
+}> {
+	override toString(): string {
+		return `missing auth for service ${this.service}`
 	}
 }
 
